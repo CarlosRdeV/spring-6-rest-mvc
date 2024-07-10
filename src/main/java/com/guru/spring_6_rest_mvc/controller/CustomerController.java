@@ -27,7 +27,8 @@ public class CustomerController {
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         log.debug("CustomerController -> updateById -> customerId: {} - customer {}", customerId, customer);
         customerService.updateById(customerId, customer);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping

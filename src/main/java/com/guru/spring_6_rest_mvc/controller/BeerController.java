@@ -26,7 +26,8 @@ public class BeerController {
     public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         log.debug("BeerController -> updateById -> beerId: {} - beer {}", beerId, beer);
         beerService.updateById(beerId, beer);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+       // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
