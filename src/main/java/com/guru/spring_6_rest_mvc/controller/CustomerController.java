@@ -6,6 +6,7 @@ import com.guru.spring_6_rest_mvc.services.BeerService;
 import com.guru.spring_6_rest_mvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +22,13 @@ import java.util.UUID;
 public class CustomerController {
 
     private final CustomerService customerService;
+
+    @PutMapping(value = "{customerId}")
+    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+        log.debug("CustomerController -> updateById -> customerId: {} - customer {}", customerId, customer);
+        customerService.updateById(customerId, customer);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
     @PostMapping
     public ResponseEntity handlePost(@RequestBody  Customer customer) {
@@ -41,7 +49,7 @@ public class CustomerController {
         return customerService.listCustomers();
     }
 
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
     public Customer getCustomerById( @PathVariable("customerId") UUID customerId  ){
         log.debug("CustomerController -> getCustomerById -> customerId: {}", customerId);
         return customerService.getCustomerById(customerId);

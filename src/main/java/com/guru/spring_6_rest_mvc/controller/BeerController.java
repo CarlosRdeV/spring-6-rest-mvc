@@ -21,6 +21,14 @@ import java.util.UUID;
 public class BeerController {
     private final BeerService beerService;
 
+
+    @PutMapping(value = "{beerId}")
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+        log.debug("BeerController -> updateById -> beerId: {} - beer {}", beerId, beer);
+        beerService.updateById(beerId, beer);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Beer beer) {
         log.debug("BeerController -> handlePost -> beer: {}", beer);
@@ -44,7 +52,7 @@ public class BeerController {
         return beerService.listBeers();
     }
 
-    @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
+    @RequestMapping(value = "{beerId}", method = RequestMethod.GET)
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("BeerController -> getBeerById -> beerId: {}", beerId);
         return beerService.getBeerById(beerId);
