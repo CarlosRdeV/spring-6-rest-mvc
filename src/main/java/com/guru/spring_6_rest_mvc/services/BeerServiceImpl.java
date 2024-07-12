@@ -95,7 +95,7 @@ public class BeerServiceImpl implements BeerService {
     public void updateById(UUID beerId, Beer beer) {
         log.debug("BeerServiceImpl -> updateById -> beerId: {} - beer {}", beerId, beer);
         Beer existing = beerMap.get(beerId);
-        existing.setVersion(existing.getVersion()+1);
+        existing.setVersion(existing.getVersion() + 1);
         existing.setBeerName(beer.getBeerName());
         existing.setBeerStyle(beer.getBeerStyle());
         existing.setUpc(beer.getUpc());
@@ -106,5 +106,11 @@ public class BeerServiceImpl implements BeerService {
 
         beerMap.put(existing.getId(), existing);
 
+    }
+
+    @Override
+    public void deleteById(UUID beerId) {
+        log.debug("BeerServiceImpl -> deleteById -> beerId: {}", beerId);
+        beerMap.remove(beerId);
     }
 }
