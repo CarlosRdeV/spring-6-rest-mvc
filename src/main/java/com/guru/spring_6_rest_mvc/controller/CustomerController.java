@@ -1,12 +1,9 @@
 package com.guru.spring_6_rest_mvc.controller;
 
-import com.guru.spring_6_rest_mvc.model.Beer;
 import com.guru.spring_6_rest_mvc.model.Customer;
-import com.guru.spring_6_rest_mvc.services.BeerService;
 import com.guru.spring_6_rest_mvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,14 +15,14 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
+@RequestMapping("/api/v1/customer/")
 public class CustomerController {
 
     private final CustomerService customerService;
 
     @PatchMapping(value = "{customerId}")
     public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
-        customerService.patchCustomerById(customerId,customer);
+        customerService.patchCustomerById(customerId, customer);
         return ResponseEntity.noContent().build();
     }
 
@@ -45,7 +42,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity handlePost(@RequestBody  Customer customer) {
+    public ResponseEntity handlePost(@RequestBody Customer customer) {
         log.debug("CustomerController -> handlePost -> customer: {}", customer);
         Customer savedCustomer = customerService.saveNewCustomer(customer);
         URI location = ServletUriComponentsBuilder
@@ -64,7 +61,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
-    public Customer getCustomerById( @PathVariable("customerId") UUID customerId  ){
+    public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> getCustomerById -> customerId: {}", customerId);
         return customerService.getCustomerById(customerId);
     }

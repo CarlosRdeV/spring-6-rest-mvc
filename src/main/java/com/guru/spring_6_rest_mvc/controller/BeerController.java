@@ -4,8 +4,6 @@ import com.guru.spring_6_rest_mvc.model.Beer;
 import com.guru.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,11 +34,12 @@ public class BeerController {
         return ResponseEntity.noContent().build();
 
     }
+
     @PutMapping(value = "{beerId}")
     public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         log.debug("BeerController -> updateById -> beerId: {} - beer {}", beerId, beer);
         beerService.updateById(beerId, beer);
-       // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
+        // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
         return ResponseEntity.noContent().build();
     }
 
