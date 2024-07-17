@@ -27,10 +27,13 @@ class CustomerControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
     @MockBean
     CustomerService customerService;
 
-    CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+    CustomerServiceImpl customerServiceImpl;
+
+    @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
     }
