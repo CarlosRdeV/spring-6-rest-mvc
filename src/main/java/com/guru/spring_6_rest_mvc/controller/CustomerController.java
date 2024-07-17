@@ -15,7 +15,7 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer/")
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
     private final CustomerService customerService;

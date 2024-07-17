@@ -31,7 +31,7 @@ class BeerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    BeerServiceImpl beerServiceImpl
+    BeerServiceImpl beerServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -40,11 +40,11 @@ class BeerControllerTest {
 
     @Test
     void handlePost() throws Exception {
-        Beer beer = beerServiceImpl.listBeers().get(0);
+        Beer beer = beerServiceImpl.listBeers().getFirst();
         beer.setVersion(null);
         beer.setId(null);
 
-        given(beerServiceImpl.saveNewBeer(any(Beer.class))).willReturn(beerServiceImpl.listBeers().get(1));
+        given(beerService.saveNewBeer(any(Beer.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
         mockMvc.perform(post("/api/v1/beer")
                         .accept(MediaType.APPLICATION_JSON)
