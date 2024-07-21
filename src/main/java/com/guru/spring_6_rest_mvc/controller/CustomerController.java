@@ -15,25 +15,26 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
+    public static final String CUSTOMER_URI = "/api/v1/customer";
+    public static final String CUSTOMER_BY_ID_URI = CUSTOMER_URI + "/{customerId}";
     private final CustomerService customerService;
 
-    @PatchMapping(value = "{customerId}")
+    @PatchMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         customerService.patchCustomerById(customerId, customer);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "{customerId}")
+    @DeleteMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> deleteById -> customerId: {}", customerId);
         customerService.deleteById(customerId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "{customerId}")
+    @PutMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         log.debug("CustomerController -> updateById -> customerId: {} - customer {}", customerId, customer);
         customerService.updateById(customerId, customer);
@@ -41,7 +42,7 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping
+    @PostMapping(CUSTOMER_URI)
     public ResponseEntity handlePost(@RequestBody Customer customer) {
         log.debug("CustomerController -> handlePost -> customer: {}", customer);
         Customer savedCustomer = customerService.saveNewCustomer(customer);
@@ -54,13 +55,13 @@ public class CustomerController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(CUSTOMER_URI)
     public List<Customer> listCustomer() {
         log.debug("CustomerController -> listCustomer");
         return customerService.listCustomers();
     }
 
-    @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
+    @GetMapping(CUSTOMER_BY_ID_URI)
     public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> getCustomerById -> customerId: {}", customerId);
         return customerService.getCustomerById(customerId);
