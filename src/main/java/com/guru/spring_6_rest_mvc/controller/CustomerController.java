@@ -1,6 +1,6 @@
 package com.guru.spring_6_rest_mvc.controller;
 
-import com.guru.spring_6_rest_mvc.model.Customer;
+import com.guru.spring_6_rest_mvc.model.CustomerDTO;
 import com.guru.spring_6_rest_mvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PatchMapping(CUSTOMER_BY_ID_URI)
-    public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+    public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
         customerService.patchCustomerById(customerId, customer);
         return ResponseEntity.noContent().build();
     }
@@ -35,7 +35,7 @@ public class CustomerController {
     }
 
     @PutMapping(CUSTOMER_BY_ID_URI)
-    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
         log.debug("CustomerController -> updateById -> customerId: {} - customer {}", customerId, customer);
         customerService.updateById(customerId, customer);
         // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
@@ -43,9 +43,9 @@ public class CustomerController {
     }
 
     @PostMapping(CUSTOMER_URI)
-    public ResponseEntity handlePost(@RequestBody Customer customer) {
+    public ResponseEntity handlePost(@RequestBody CustomerDTO customer) {
         log.debug("CustomerController -> handlePost -> customer: {}", customer);
-        Customer savedCustomer = customerService.saveNewCustomer(customer);
+        CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -56,14 +56,14 @@ public class CustomerController {
     }
 
     @GetMapping(CUSTOMER_URI)
-    public List<Customer> listCustomer() {
+    public List<CustomerDTO> listCustomer() {
         log.debug("CustomerController -> listCustomer");
         return customerService.listCustomers();
     }
 
     @GetMapping(CUSTOMER_BY_ID_URI)
-    public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
+    public CustomerDTO getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> getCustomerById -> customerId: {}", customerId);
-        return customerService.getCustomerById(customerId);
+        return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
 }

@@ -1,7 +1,7 @@
 package com.guru.spring_6_rest_mvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guru.spring_6_rest_mvc.model.Customer;
+import com.guru.spring_6_rest_mvc.model.CustomerDTO;
 import com.guru.spring_6_rest_mvc.services.CustomerService;
 import com.guru.spring_6_rest_mvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +43,7 @@ class CustomerControllerTest {
     ArgumentCaptor<UUID> uuidArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<Customer> customerArgumentCaptor;
+    ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
     CustomerServiceImpl customerServiceImpl;
 
@@ -53,7 +54,7 @@ class CustomerControllerTest {
 
     @Test
     void testPatchCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().getFirst();
+        CustomerDTO customer = customerServiceImpl.listCustomers().getFirst();
 
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("customerName", "Changed name");
@@ -72,7 +73,7 @@ class CustomerControllerTest {
 
     @Test
     void testDeleteCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().getFirst();
+        CustomerDTO customer = customerServiceImpl.listCustomers().getFirst();
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_BY_ID_URI, customer.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -85,7 +86,7 @@ class CustomerControllerTest {
 
     @Test
     void testUpdateCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().getFirst();
+        CustomerDTO customer = customerServiceImpl.listCustomers().getFirst();
 
         mockMvc.perform(put(CustomerController.CUSTOMER_BY_ID_URI, customer.getId())
                         .content(objectMapper.writeValueAsString(customer))
@@ -93,18 +94,18 @@ class CustomerControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).updateById(uuidArgumentCaptor.capture(), any(Customer.class));
+        verify(customerService).updateById(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
 
         assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
     void saveNewCustomer() throws Exception {
-        Customer customer = customerServiceImpl.listCustomers().getFirst();
+        CustomerDTO customer = customerServiceImpl.listCustomers().getFirst();
         customer.setId(null);
         customer.setVersion(null);
 
-        given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.listCustomers().get(1));
+        given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
 
         mockMvc.perform(post(CustomerController.CUSTOMER_URI)
                         .accept(MediaType.APPLICATION_JSON)
@@ -126,10 +127,19 @@ class CustomerControllerTest {
     }
 
     @Test
-    void getCustomerById() throws Exception {
-        Customer testCustomer = customerServiceImpl.listCustomers().getFirst();
+    void getCustomerByIdNotFound() throws Exception {
 
-        given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
+
+        mockMvc.perform(get(CustomerController.CUSTOMER_BY_ID_URI, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getCustomerById() throws Exception {
+        CustomerDTO testCustomer = customerServiceImpl.listCustomers().getFirst();
+
+        given(customerService.getCustomerById(testCustomer.getId())).willReturn(Optional.of(testCustomer));
 
         mockMvc.perform(get(CustomerController.CUSTOMER_BY_ID_URI, testCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))

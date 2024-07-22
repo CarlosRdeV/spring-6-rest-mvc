@@ -1,6 +1,6 @@
 package com.guru.spring_6_rest_mvc.controller;
 
-import com.guru.spring_6_rest_mvc.model.Beer;
+import com.guru.spring_6_rest_mvc.model.BeerDTO;
 import com.guru.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +23,21 @@ public class BeerController {
 
 
     @GetMapping(BEER_BY_ID_URI)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
         log.debug("BeerController -> getBeerById -> beerId: {}", beerId);
-        return beerService.getBeerById(beerId);
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
     @GetMapping(BEER_URI)
-    public List<Beer> listBeers() {
+    public List<BeerDTO> listBeers() {
         log.debug("BeerController -> listBeers");
         return beerService.listBeers();
     }
 
     @PostMapping(BEER_URI)
-    public ResponseEntity handlePost(@RequestBody Beer beer) {
+    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
         log.debug("BeerController -> handlePost -> beer: {}", beer);
-        Beer savedBeer = beerService.saveNewBeer(beer);
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
         //Manera manual de hacerlo
         //HttpHeaders headers = new HttpHeaders();
         //headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
@@ -52,7 +52,7 @@ public class BeerController {
     }
 
     @PutMapping(BEER_BY_ID_URI)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         log.debug("BeerController -> updateById -> beerId: {} - beer {}", beerId, beer);
         beerService.updateById(beerId, beer);
         // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
@@ -68,9 +68,11 @@ public class BeerController {
     }
 
     @PatchMapping(BEER_BY_ID_URI)
-    public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         log.debug("BeerController -> updateBeerPatchById -> beerId: {} - beer {}", beerId, beer);
         beerService.patchBeerById(beerId, beer);
         return ResponseEntity.noContent().build();
     }
+
+
 }
