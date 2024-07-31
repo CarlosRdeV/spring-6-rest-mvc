@@ -30,14 +30,18 @@ public class CustomerController {
     @DeleteMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> deleteById -> customerId: {}", customerId);
-        customerService.deleteById(customerId);
+        if (!customerService.deleteById(customerId)){
+            throw new NotFoundException();
+        }
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
         log.debug("CustomerController -> updateById -> customerId: {} - customer {}", customerId, customer);
-        customerService.updateById(customerId, customer);
+        if (customerService.updateById(customerId, customer).isEmpty()) {
+            throw new NotFoundException();
+        }
         // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
         return ResponseEntity.noContent().build();
     }
