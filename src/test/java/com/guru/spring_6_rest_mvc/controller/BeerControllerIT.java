@@ -15,7 +15,6 @@ import org.springframework.test.annotation.Rollback;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,12 +31,24 @@ class BeerControllerIT {
     BeerMapper beerMapper;
 
     @Test
+    void testPartchNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.patchBeerById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+    }
+
+
+    @Rollback
+    @Transactional
+    @Test
     void testPatchById() {
-        //Falta implementar patch en serviceJPA
         Beer beer = beerRepository.findAll().getFirst();
         BeerDTO dto = beerMapper.beerToBeerDTO(beer);
         dto.setId(null);
         dto.setVersion(null);
+        dto.setPrice(null);
+        dto.setUpc(null);
+        dto.setBeerStyle(null);
         final String beerName = "Patched Name";
         dto.setBeerName(beerName);
 
