@@ -1,22 +1,35 @@
 package com.guru.spring_6_rest_mvc.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.guru.spring_6_rest_mvc.entities.Beer;
 import com.guru.spring_6_rest_mvc.mappers.BeerMapper;
 import com.guru.spring_6_rest_mvc.model.BeerDTO;
 import com.guru.spring_6_rest_mvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class BeerControllerIT {
@@ -30,13 +43,45 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+    @Autowired
+    WebApplicationContext wac;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
+
+
     @Test
-    void testPartchNotFound() {
+    void testPatchByIdBadName() throws Exception {
+        Beer beer = beerRepository.findAll().getFirst();
+
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "New Name1231321312312313213123123132131231231321312312313213123123132131231231321312312313213123123132131231231321312312313213123123132131231231321312312313213123123132131231231321312312313213123123132131231231321312312313213123123132131231231321312312313213123");
+
+        MvcResult mvcResult = mockMvc.perform(patch(BeerController.BEER_BY_ID_URI, beer.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerMap)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()", is(1)))
+                .andReturn();
+
+        System.out.println(mvcResult.getResponse().getContentAsString());
+
+    }
+
+    @Test
+    void testPatchByIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
             beerController.patchBeerById(UUID.randomUUID(), BeerDTO.builder().build());
         });
     }
-
 
     @Rollback
     @Transactional
@@ -48,7 +93,7 @@ class BeerControllerIT {
         dto.setVersion(null);
         dto.setPrice(null);
         dto.setUpc(null);
-        dto.setBeerStyle(null);
+        dto.setQuantityOnHand(null);
         final String beerName = "Patched Name";
         dto.setBeerName(beerName);
 
