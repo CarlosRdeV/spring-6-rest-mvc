@@ -5,6 +5,7 @@ import com.guru.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,7 +36,7 @@ public class BeerController {
     }
 
     @PostMapping(BEER_URI)
-    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
+    public ResponseEntity handlePost(@Validated @RequestBody BeerDTO beer) {
         log.debug("BeerController -> handlePost -> beer: {}", beer);
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
         //Manera manual de hacerlo
@@ -52,7 +53,7 @@ public class BeerController {
     }
 
     @PutMapping(BEER_BY_ID_URI)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @Validated @RequestBody BeerDTO beer) {
         log.debug("BeerController -> updateById -> beerId: {} - beer {}", beerId, beer);
         if (beerService.updateById(beerId, beer).isEmpty()) {
             throw new NotFoundException();
@@ -73,11 +74,13 @@ public class BeerController {
 
     @PatchMapping(BEER_BY_ID_URI)
     public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
-        log.debug("BeerController -> updateBeerPatchById -> beerId: {} - beer {}", beerId, beer);
-        if (beerService.patchBeerById(beerId, beer).isEmpty()){
+        log.debug("BeerController -> patchBeerById -> beerId: {} - beer {}", beerId, beer);
+        if (beerService.patchBeerById(beerId, beer).isEmpty()) {
             throw new NotFoundException();
         }
+        // return new ResponseEntity(HttpStatus.NO_CONTENT); es lo mismo
         return ResponseEntity.noContent().build();
+
     }
 
 

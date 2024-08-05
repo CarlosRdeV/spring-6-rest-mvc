@@ -23,14 +23,18 @@ public class CustomerController {
 
     @PatchMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
-        customerService.patchCustomerById(customerId, customer);
+
+        log.debug("CustomerController -> patchCustomerById -> customerId: {} - customer {}", customerId, customer);
+        if (customerService.patchCustomerById(customerId, customer).isEmpty()) {
+            throw new NotFoundException();
+        }
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(CUSTOMER_BY_ID_URI)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
         log.debug("CustomerController -> deleteById -> customerId: {}", customerId);
-        if (!customerService.deleteById(customerId)){
+        if (!customerService.deleteById(customerId)) {
             throw new NotFoundException();
         }
         return ResponseEntity.noContent().build();
