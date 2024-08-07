@@ -124,19 +124,19 @@ public class BeerServiceImpl implements BeerService {
         log.debug("BeerServiceImpl -> updateBeerPatchById -> beerId: {} - beer {}", beerId, beer);
         BeerDTO existing = beerMap.get(beerId);
 
-        if(StringUtils.hasText(beer.getBeerName())) {
+        if (StringUtils.hasText(beer.getBeerName())) {
             existing.setBeerName(beer.getBeerName());
         }
-        if (beer.getBeerStyle() != null){
+        if (beer.getBeerStyle() != null) {
             existing.setBeerStyle(beer.getBeerStyle());
         }
-        if (StringUtils.hasText(beer.getUpc())){
+        if (StringUtils.hasText(beer.getUpc())) {
             existing.setUpc(beer.getUpc());
         }
-        if (beer.getQuantityOnHand() != null){
+        if (beer.getQuantityOnHand() != null) {
             existing.setQuantityOnHand(beer.getQuantityOnHand());
         }
-        if (beer.getPrice() != null){
+        if (beer.getPrice() != null) {
             existing.setPrice(beer.getPrice());
         }
 
