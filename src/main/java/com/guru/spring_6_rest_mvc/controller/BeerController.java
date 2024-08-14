@@ -1,6 +1,7 @@
 package com.guru.spring_6_rest_mvc.controller;
 
 import com.guru.spring_6_rest_mvc.model.BeerDTO;
+import com.guru.spring_6_rest_mvc.model.BeerStyle;
 import com.guru.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,14 @@ public class BeerController {
     }
 
     @GetMapping(BEER_URI)
-    public List<BeerDTO> listBeers() {
-        log.debug("BeerController -> listBeers");
-        return beerService.listBeers();
+    public List<BeerDTO> listBeers(
+            @RequestParam(required = false) String beerName,
+            @RequestParam(required = false) BeerStyle beerStyle,
+            @RequestParam(required = false) Boolean showInventory,
+            @RequestParam(required = false) Integer pageNumber,
+            @RequestParam(required = false) Integer pageSize) {
+        log.debug("BeerController -> listBeers -> beerName: {} -> beerStyle -> {} -> showInventory -> {} -> pageNumber -> {} -> pageSize -> {}", beerName, beerStyle, showInventory, pageNumber, pageSize);
+        return beerService.listBeers(beerName, beerStyle, showInventory, pageNumber, pageSize);
     }
 
     @PostMapping(BEER_URI)

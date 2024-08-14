@@ -7,7 +7,6 @@ import com.guru.spring_6_rest_mvc.model.BeerStyle;
 import com.guru.spring_6_rest_mvc.repositories.BeerRepository;
 import com.guru.spring_6_rest_mvc.repositories.CustomerRepository;
 import com.guru.spring_6_rest_mvc.services.BeerCsvService;
-import com.guru.spring_6_rest_mvc.services.BeerCsvServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +71,7 @@ public class BootStrapData implements CommandLineRunner {
             };
 
             beerRepository.save(Beer.builder()
-                    .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(),50))
+                    .beerName(StringUtils.abbreviate(beerCSVRecord.getBeer(), 50))
                     .beerStyle(beerStyle)
                     .price(BigDecimal.TEN)
                     .upc(beerCSVRecord.getRow().toString())
