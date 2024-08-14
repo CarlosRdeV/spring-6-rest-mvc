@@ -5,13 +5,13 @@ import com.guru.spring_6_rest_mvc.model.BeerStyle;
 import com.guru.spring_6_rest_mvc.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -31,7 +31,7 @@ public class BeerController {
     }
 
     @GetMapping(BEER_URI)
-    public List<BeerDTO> listBeers(
+    public Page<BeerDTO> listBeers(
             @RequestParam(required = false) String beerName,
             @RequestParam(required = false) BeerStyle beerStyle,
             @RequestParam(required = false) Boolean showInventory,
